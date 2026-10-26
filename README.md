@@ -10,7 +10,7 @@ Air pollution is a major public-health problem in many Indian cities. This proje
 The pipeline is **city-independent** (the city is a single variable `CITY` in the code). For model building and demonstration, **Delhi is used as a case study** because it has long, continuous records and strong seasonal pollution patterns.
 
 ## 2. Dataset
-- **Source:** Air Quality Data in India (daily city-wise data), file `city_name.csv`
+- **Source:** [Air Quality Data in India (daily city-wise data)](https://www.kaggle.com/datasets/rohanrao/air-quality-data-in-india), file `city_name.csv`
 - **Subset used:** City = Delhi (case study, selected via `CITY = "Delhi"`), sorted by date
 - **Target:** `AQI`
 - **Features:** PM2.5, PM10, NO, NO2, NOx, NH3, CO, SO2, O3 + date
