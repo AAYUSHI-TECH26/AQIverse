@@ -1,4 +1,4 @@
-# Air Quality Index (AQI) Prediction using Machine Learning – Review 1
+# Air Quality Index (AQI) Prediction using Machine Learning 
 
 **Name:** Aayushi  |  **Roll No:** 22515000005  |  **Course:** B.Tech CSE – Data Science Project
 
@@ -19,50 +19,50 @@ The pipeline is **city-independent** (the city is a single variable `CITY` in th
 
 ## 3. Project Structure
 ```
-└──code
+├── README.md                 # this report
+└── code/
     ├── aqiverse_part1.py     # complete code (EDA + preprocessing + model)
     ├── city_name.csv         # dataset
     ├── cleaned_data.csv      # cleaned data (generated)
+    ├── delhi_cleaned.csv     # cleaned data of Delhi (generated)
     ├── model_results.csv     # model metrics (generated)
-    ├── delhi_cleaned.csv     # cleaned data of delhi (generated)
-    ├── images/               # all graphs used in this report
-└── README.md                 # this report
+    └── images/               # all graphs used in this report
 ```
-Run: `pip install numpy pandas matplotlib seaborn scikit-learn` then `python aqiverse_part1.py`
+Run: `pip install numpy pandas matplotlib seaborn scikit-learn` then, from inside the `code` folder, `python aqiverse_part1.py`
 
 ---
 
 ## 4. Exploratory Data Analysis (EDA)
 
 ### 4.1 Missing values
-![missing](images/01_missing_values.png)
+![missing](code/images/01_missing_values.png)
 
 Xylene has the most missing values (about 38.9%), followed by SO2 (5.5%), O3 (4.2%) and PM10 (3.8%); the other columns have almost none. Xylene is not used as a feature. 10 rows were removed in total (missing AQI / duplicates). Rows where the **target (AQI) is missing were dropped**, because we cannot learn from unlabelled rows. Duplicate rows were also dropped.
 
 ### 4.2 AQI distribution
-![dist](images/02_aqi_distribution.png)
+![dist](code/images/02_aqi_distribution.png)
 
 The AQI distribution is right-skewed: most days are moderate, but there is a long tail of very high AQI days. The boxplot confirms many high-value points.
 
 > The graphs below are generated for the selected case-study city (Delhi).
 
 ### 4.3 AQI trend over time
-![trend](images/03_aqi_trend.png)
+![trend](code/images/03_aqi_trend.png)
 
 AQI shows clear repeating peaks every year, which means the data has strong **seasonality**.
 
 ### 4.4 Monthly and yearly pattern
-![month](images/04_aqi_by_month.png) ![year](images/05_aqi_by_year.png)
+![month](code/images/04_aqi_by_month.png) ![year](code/images/05_aqi_by_year.png)
 
 AQI is highest in **Oct–Jan** (crop-residue burning, Diwali, cold temperature, low wind) and lowest in **Jul–Sep** (monsoon rain washes pollutants away). Because of this, `month` is a useful feature.
 
 ### 4.5 Season-wise AQI
-![season](images/10_aqi_by_season.png)
+![season](code/images/10_aqi_by_season.png)
 
 Winter and Post-Monsoon have the highest median AQI; Monsoon has the lowest.
 
 ### 4.6 Correlation between pollutants
-![corr](images/09_correlation.png)
+![corr](code/images/09_correlation.png)
 
 PM2.5 and PM10 have the strongest correlation with AQI, because AQI in India is mostly driven by particulate matter. NO, NO2 and NOx are also strongly correlated with each other (multicollinearity).
 
@@ -85,21 +85,20 @@ PM2.5 and PM10 have the strongest correlation with AQI, because AQI in India is 
 ### 5.1 Outlier detection and removal
 Boxplots **before** treatment (many extreme points):
 
-![before](images/06_boxplot_before.png)
+![before](code/images/06_boxplot_before.png)
 
 Number of outliers detected per pollutant (IQR, k = 3): CO 163, NH3 24, O3 20, NO 19, SO2 16, PM2.5 11, NOx 4, NO2 1, PM10 0. CO has by far the most extreme values, because its readings are highly right-skewed.
 
-
-![counts](images/07_outlier_counts.png)
+![counts](code/images/07_outlier_counts.png)
 
 Boxplots **after** treatment:
 
-![after](images/08_boxplot_after.png)
+![after](code/images/08_boxplot_after.png)
 
 **Note:** A wider threshold (k = 3 instead of the usual 1.5) was used on purpose. Indian cities such as Delhi have genuinely severe pollution days, and the usual 1.5×IQR rule would delete real events. Outlier values were replaced by interpolation instead of deleting full rows, so the daily sequence (needed for lag features) stays intact. AQI (target) was not altered.
 
 ### 5.2 Scaling
-![scaling](images/11_scaling_before_after.png)
+![scaling](code/images/11_scaling_before_after.png)
 
 The scaler is **fitted only on the training data** and applied to test data, inside an sklearn `Pipeline`, to avoid data leakage.
 
@@ -118,8 +117,8 @@ Two models were trained on the scaled features: **Linear Regression** (baseline)
 
 Random Forest performs better than the baseline on all three metrics (lower MAE and RMSE, higher R²). Its predictions are on average about 27 AQI points away from the actual value.
 
-![pred](images/12_actual_vs_predicted.png)
-![imp](images/13_feature_importance.png)
+![pred](code/images/12_actual_vs_predicted.png)
+![imp](code/images/13_feature_importance.png)
 
 The most important features are `AQI_lag1` and `AQI_roll7`, i.e. recent AQI history, followed by PM2.5/PM10 lags.
 
